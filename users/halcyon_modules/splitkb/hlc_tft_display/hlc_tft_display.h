@@ -12,8 +12,8 @@
 #define HSV_CAPS_ON 17, 191, 245
 #define HSV_SCROLL_OFF 202, 104, 77
 #define HSV_SCROLL_ON 202, 191, 245
-#define HSV_NUM_OFF 142, 104, 77
-#define HSV_NUM_ON 142, 191, 245
+#define HSV_GUI_OFF 142, 104, 77
+#define HSV_GUI_ON 142, 191, 245
 
 #define HSV_LAYER_0 0, 0, 160
 #define HSV_LAYER_3 0, 82, 255

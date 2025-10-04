@@ -24,8 +24,8 @@
 #include "graphics/numbers/undef.qgf.h"
 
 static const char *caps =        "Caps";
-static const char *gui =         "GUI";
-static const char *scroll =      "Scroll";
+static const char *gui =         "Gui";
+static const char *alt =         "Alt";
 
 static painter_font_handle_t Retron27;
 static painter_font_handle_t Retron27_underline;
@@ -188,12 +188,17 @@ void update_display(void) {
         Retron27_underline = qp_load_font_mem(font_Retron2000_underline_27);
     }
 
-    // Always update GUI key display
+    // Always update GUI and Alt key display
     uint8_t mods = get_mods();
     bool gui_pressed = mods & (MOD_BIT(KC_LGUI) | MOD_BIT(KC_RGUI));
     gui_pressed
         ? qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - Retron27->line_height * 2 - 10, Retron27_underline, gui,    HSV_GUI_ON,    HSV_BLACK)
         : qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - Retron27->line_height * 2 - 10, Retron27, gui,    HSV_GUI_OFF,    HSV_BLACK);
+
+    bool alt_pressed = mods & (MOD_BIT(KC_LALT) | MOD_BIT(KC_RALT));
+    alt_pressed
+        ? qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - Retron27->line_height - 5, Retron27_underline, alt, HSV_SCROLL_ON, HSV_BLACK)
+        : qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - Retron27->line_height - 5, Retron27, alt, HSV_SCROLL_OFF, HSV_BLACK);
 
     if(last_led_usb_state.raw != host_keyboard_led_state().raw || first_run_led == false) {
         led_t led_usb_state = host_keyboard_led_state();
@@ -201,10 +206,6 @@ void update_display(void) {
         led_usb_state.caps_lock
             ? qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - Retron27->line_height * 3 - 15, Retron27_underline, caps,   HSV_CAPS_ON,   HSV_BLACK)
             : qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - Retron27->line_height * 3 - 15, Retron27, caps,   HSV_CAPS_OFF,   HSV_BLACK);
-
-        led_usb_state.scroll_lock
-            ? qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - Retron27->line_height - 5,      Retron27_underline, scroll, HSV_SCROLL_ON, HSV_BLACK)
-            : qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - Retron27->line_height - 5,      Retron27, scroll, HSV_SCROLL_OFF, HSV_BLACK);
 
         last_led_usb_state = led_usb_state;
         first_run_led = true;

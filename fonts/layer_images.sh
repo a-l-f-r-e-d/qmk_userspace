@@ -9,10 +9,12 @@ foreach i (0 1 2 3 4 5 6 7 8 9)
     -background black \
     -fill white \
     -font FiraCode-Medium.ttf \
-    -pointsize 288 \
+    -pointsize 360 \
     -gravity center \
     label:"$i" \
-    -resize 75x105 \
+    -trim \
+    +repage \
+    -resize 75x105! \
     -monochrome \
     -type Bilevel \
     $i.png
@@ -34,10 +36,12 @@ magick -size 300x420 \
   -background black \
   -fill white \
   -font FiraCode-Medium.ttf \
-  -pointsize 288 \
+  -pointsize 360 \
   -gravity center \
   label:"?" \
-  -resize 75x105 \
+  -trim \
+  +repage \
+  -resize 75x105! \
   -monochrome \
   -type Bilevel \
   undef.png

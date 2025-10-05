@@ -1,4 +1,30 @@
 CompileFlags:
-  Add: [-Wno-unknown-attributes, -Wno-maybe-uninitialized, -Wno-unknown-warning-option]
-  Remove: [-W*, -mmcu=*, -mcpu=*, -mfpu=*, -mfloat-abi=*, -mno-unaligned-access, -mno-thumb-interwork, -mcall-prologues, -D__has_include*]
+  Add:
+    - -Wno-unknown-attributes
+    - -Wno-maybe-uninitialized
+    - -Wno-unknown-warning-option
+    - -I/Users/alfred/Projects/vial-kb/vial-qmk
+    - -I/Users/alfred/Projects/vial-kb/vial-qmk/quantum
+    - -I/Users/alfred/Projects/vial-kb/vial-qmk/quantum/painter
+    - -I/Users/alfred/Projects/vial-kb/vial-qmk/drivers
+    - -I/Users/alfred/Projects/vial-kb/vial-qmk/lib
+    - -I/Users/alfred/Projects/vial-kb/vial-qmk/platforms
+    - -I/Users/alfred/Projects/vial-kb/vial-qmk/tmk_core
+    - -I/Users/alfred/Projects/a-l-f-r-e-d/qmk_userspace
+    - -I/Users/alfred/Projects/a-l-f-r-e-d/qmk_userspace/users
+    - -DQMK_KEYBOARD_H
+  Remove:
+    - -W*
+    - -mmcu=*
+    - -mcpu=*
+    - -mfpu=*
+    - -mfloat-abi=*
+    - -mno-unaligned-access
+    - -mno-thumb-interwork
+    - -mcall-prologues
+    - -D__has_include*
   Compiler: clang
+
+Diagnostics:
+  UnusedIncludes: None
+  MissingIncludes: None

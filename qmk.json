@@ -20,7 +20,7 @@
             "splitkb/kyria/rev2",
             "vial",
             {
-                "TARGET": "splitkb_kyria_rev2_vial_todo"
+                "TARGET": "splitkb_kyria_rev2_vial"
             }
         ]
     ]

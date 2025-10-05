@@ -8,6 +8,13 @@
                 "HLC_TFT_DISPLAY": "1",
                 "TARGET": "splitkb_halcyon_corne_rev2_vial_hlc_display"
             }
+        ],
+        [
+            "keebio/iris/rev4",
+            "default",
+            {
+                "TARGET": "keebio_iris_rev4_vial"
+            }
         ]
     ]
 }

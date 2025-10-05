@@ -178,7 +178,7 @@ void add_cell_cluster() {
 }
 
 void update_display(void) {
-    static bool first_run_led = false;
+    //static bool first_run_led = false;
     static bool first_run_layer = false;
 
     if( first_run_layer == false) {
@@ -188,31 +188,39 @@ void update_display(void) {
 
     // Always update modifier key display
     uint8_t mods = get_mods();
-    
+
+    // gui
     bool gui_pressed = mods & (MOD_BIT(KC_LGUI) | MOD_BIT(KC_RGUI));
     gui_pressed
         ? qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height * 3 - 6, FiraCode20, gui, HSV_GUI_ON, HSV_BLACK)
         : qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height * 3 - 6, FiraCode20, gui, HSV_GUI_OFF, HSV_BLACK);
 
+    // alt
+    // todo fix color variable
     bool alt_pressed = mods & (MOD_BIT(KC_LALT) | MOD_BIT(KC_RALT));
     alt_pressed
         ? qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height * 2 - 4, FiraCode20, alt, HSV_SCROLL_ON, HSV_BLACK)
         : qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height * 2 - 4, FiraCode20, alt, HSV_SCROLL_OFF, HSV_BLACK);
 
+    // ctrl
+    // todo fix color variable
     bool ctrl_pressed = mods & (MOD_BIT(KC_LCTL) | MOD_BIT(KC_RCTL));
     ctrl_pressed
         ? qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height - 2, FiraCode20, ctrl, HSV_SCROLL_ON, HSV_BLACK)
         : qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height - 2, FiraCode20, ctrl, HSV_SCROLL_OFF, HSV_BLACK);
 
-    if(last_led_usb_state.raw != host_keyboard_led_state().raw || first_run_led == false) {
-        led_t led_usb_state = host_keyboard_led_state();
+    // shift / caps
+    bool shift_pressed = mods & (MOD_BIT(KC_LSFT) | MOD_BIT(KC_RSFT));
+    led_t led_usb_state = host_keyboard_led_state();
+    bool caps_enabled = led_usb_state.caps_lock;
 
-        led_usb_state.caps_lock
-            ? qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height * 4 - 8, FiraCode20, caps, HSV_CAPS_ON, HSV_BLACK)
-            : qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height * 4 - 8, FiraCode20, caps, HSV_CAPS_OFF, HSV_BLACK);
-
-        last_led_usb_state = led_usb_state;
-        first_run_led = true;
+    if(caps_enabled){
+        qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height * 4 - 8, FiraCode20, caps, HSV_CAPS_ON, HSV_BLACK);
+    } else if (shift_pressed) {
+        // todo fix color variable
+        qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height * 4 - 8, FiraCode20, caps, HSV_SCROLL_ON, HSV_BLACK);
+    } else {
+        qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height * 4 - 8, FiraCode20, caps, HSV_CAPS_OFF, HSV_BLACK);
     }
 
     if(last_layer_state != layer_state || first_run_layer == false) {

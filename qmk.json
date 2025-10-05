@@ -15,6 +15,13 @@
             {
                 "TARGET": "keebio_iris_rev4_vial"
             }
+        ],
+        [
+            "splitkb/kyria/rev2",
+            "default",
+            {
+                "TARGET": "splitkb_kyria_rev2_vial"
+            }
         ]
     ]
 }

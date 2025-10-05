@@ -28,7 +28,8 @@ static const char *alt =         "Alt";
 static const char *ctrl =        "Ctrl";
 
 static painter_font_handle_t FiraCode20;
-static painter_image_handle_t layer_number;
+static painter_image_handle_t layer_images[9];  // 0-7 + undef
+static bool images_loaded = false;
 
 static uint8_t lcd_surface_fb[SURFACE_REQUIRED_BUFFER_BYTE_SIZE(135, 240, 16)];
 
@@ -177,7 +178,7 @@ void add_cell_cluster() {
     }
 }
 
-void update_display(void) {
+bool update_display(void) {
     static bool first_run = true;
     static bool first_run_layer = false;
     static bool last_gui_pressed = false;
@@ -186,9 +187,25 @@ void update_display(void) {
     static bool last_shift_pressed = false;
     static bool last_caps_enabled = false;
 
+    bool display_changed = false;
+
     if (first_run_layer == false) {
         // Load fonts
         FiraCode20 = qp_load_font_mem(font_FiraCode_20);
+        
+        // Pre-load all layer images
+        if (!images_loaded) {
+            layer_images[0] = qp_load_image_mem(gfx_0);
+            layer_images[1] = qp_load_image_mem(gfx_1);
+            layer_images[2] = qp_load_image_mem(gfx_2);
+            layer_images[3] = qp_load_image_mem(gfx_3);
+            layer_images[4] = qp_load_image_mem(gfx_4);
+            layer_images[5] = qp_load_image_mem(gfx_5);
+            layer_images[6] = qp_load_image_mem(gfx_6);
+            layer_images[7] = qp_load_image_mem(gfx_7);
+            layer_images[8] = qp_load_image_mem(gfx_undef);
+            images_loaded = true;
+        }
     }
 
     uint8_t mods = get_mods();
@@ -202,6 +219,7 @@ void update_display(void) {
             qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height * 3 - 6, FiraCode20, gui, HSV_GUI_OFF, HSV_BLACK);
         }
         last_gui_pressed = gui_pressed;
+        display_changed = true;
     }
 
     // alt
@@ -213,6 +231,7 @@ void update_display(void) {
             qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height * 2 - 4, FiraCode20, alt, HSV_SCROLL_OFF, HSV_BLACK);
         }
         last_alt_pressed = alt_pressed;
+        display_changed = true;
     }
 
     // ctrl
@@ -224,6 +243,7 @@ void update_display(void) {
             qp_drawtext_recolor(lcd_surface, 5, LCD_HEIGHT - FiraCode20->line_height - 2, FiraCode20, ctrl, HSV_SCROLL_OFF, HSV_BLACK);
         }
         last_ctrl_pressed = ctrl_pressed;
+        display_changed = true;
     }
 
     // shift / caps
@@ -240,52 +260,48 @@ void update_display(void) {
         }
         last_shift_pressed = shift_pressed;
         last_caps_enabled = caps_enabled;
+        display_changed = true;
     }
 
     if (last_layer_state != layer_state || first_run_layer == false) {
-        switch (get_highest_layer(layer_state|default_layer_state)) {
+        uint8_t current_layer = get_highest_layer(layer_state|default_layer_state);
+        uint8_t image_index = (current_layer <= 7) ? current_layer : 8;
+        
+        switch (current_layer) {
         case 0:
-            layer_number = qp_load_image_mem(gfx_0);
-            qp_drawimage_recolor(lcd_surface, 5, 5, layer_number, HSV_LAYER_0, HSV_BLACK);
+            qp_drawimage_recolor(lcd_surface, 5, 5, layer_images[image_index], HSV_LAYER_0, HSV_BLACK);
             break;
         case 1:
-            layer_number = qp_load_image_mem(gfx_1);
-            qp_drawimage_recolor(lcd_surface, 5, 5, layer_number, HSV_LAYER_1, HSV_BLACK);
+            qp_drawimage_recolor(lcd_surface, 5, 5, layer_images[image_index], HSV_LAYER_1, HSV_BLACK);
             break;
         case 2:
-            layer_number = qp_load_image_mem(gfx_2);
-            qp_drawimage_recolor(lcd_surface, 5, 5, layer_number, HSV_LAYER_2, HSV_BLACK);
+            qp_drawimage_recolor(lcd_surface, 5, 5, layer_images[image_index], HSV_LAYER_2, HSV_BLACK);
             break;
         case 3:
-            layer_number = qp_load_image_mem(gfx_3);
-            qp_drawimage_recolor(lcd_surface, 5, 5, layer_number, HSV_LAYER_3, HSV_BLACK);
+            qp_drawimage_recolor(lcd_surface, 5, 5, layer_images[image_index], HSV_LAYER_3, HSV_BLACK);
             break;
         case 4:
-            layer_number = qp_load_image_mem(gfx_4);
-            qp_drawimage_recolor(lcd_surface, 5, 5, layer_number, HSV_LAYER_4, HSV_BLACK);
+            qp_drawimage_recolor(lcd_surface, 5, 5, layer_images[image_index], HSV_LAYER_4, HSV_BLACK);
             break;
         case 5:
-            layer_number = qp_load_image_mem(gfx_5);
-            qp_drawimage_recolor(lcd_surface, 5, 5, layer_number, HSV_LAYER_5, HSV_BLACK);
+            qp_drawimage_recolor(lcd_surface, 5, 5, layer_images[image_index], HSV_LAYER_5, HSV_BLACK);
             break;
         case 6:
-            layer_number = qp_load_image_mem(gfx_6);
-            qp_drawimage_recolor(lcd_surface, 5, 5, layer_number, HSV_LAYER_6, HSV_BLACK);
+            qp_drawimage_recolor(lcd_surface, 5, 5, layer_images[image_index], HSV_LAYER_6, HSV_BLACK);
             break;
         case 7:
-            layer_number = qp_load_image_mem(gfx_7);
-            qp_drawimage_recolor(lcd_surface, 5, 5, layer_number, HSV_LAYER_7, HSV_BLACK);
+            qp_drawimage_recolor(lcd_surface, 5, 5, layer_images[image_index], HSV_LAYER_7, HSV_BLACK);
             break;
         default:
-            layer_number = qp_load_image_mem(gfx_undef);
-            qp_drawimage_recolor(lcd_surface, 5, 5, layer_number, HSV_LAYER_UNDEF, HSV_BLACK);
+            qp_drawimage_recolor(lcd_surface, 5, 5, layer_images[8], HSV_LAYER_UNDEF, HSV_BLACK);
         }
-        qp_close_image(layer_number);
         last_layer_state = layer_state;
         first_run_layer = true;
+        display_changed = true;
     }
 
     first_run = false;
+    return display_changed;
 }
 
 // Called from halcyon.c
@@ -330,6 +346,8 @@ bool module_post_init_kb(void) {
 bool display_module_housekeeping_task_kb(bool second_display) {
     if(!display_module_housekeeping_task_user(second_display)) { return false; }
 
+    bool needs_flush = false;
+
     if(second_display) {
         static uint32_t last_draw = 0;
         static bool second_display_set = false;
@@ -353,17 +371,18 @@ bool display_module_housekeeping_task_kb(bool second_display) {
             }
 
             last_draw = timer_read32();
+            needs_flush = true;
         }
+    } else {
+        // Update display information (layers, numlock, etc.)
+        needs_flush = update_display();
     }
 
-    // Update display information (layers, numlock, etc.)
-    if(!second_display) {
-        update_display();
+    // Only flush if something changed
+    if (needs_flush) {
+        qp_surface_draw(lcd_surface, lcd, 0, 0, 0);
+        qp_flush(lcd);
     }
-
-    // Move surface to lcd
-    qp_surface_draw(lcd_surface, lcd, 0, 0, 0);
-    qp_flush(lcd);
 
     return true;
 }

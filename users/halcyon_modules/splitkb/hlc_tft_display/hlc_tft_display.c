@@ -22,10 +22,10 @@
 #include "graphics/numbers/9.qgf.h"
 #include "graphics/numbers/undef.qgf.h"
 
-static const char *caps =        "Caps";
-static const char *gui =         "Gui";
-static const char *alt =         "Alt";
-static const char *ctrl =        "Ctrl";
+static const char *caps = "Caps";  // ⇪ Caps
+static const char *gui  = "Cmd";   // ⌘ Cmd
+static const char *alt  = "Alt";   // ⌥ Alt
+static const char *ctrl = "Ctrl";  // ⌃ Ctrl
 
 static painter_font_handle_t FiraCode20;
 static painter_image_handle_t layer_images[9];  // 0-7 + undef
@@ -192,7 +192,7 @@ bool update_display(void) {
     if (first_run_layer == false) {
         // Load fonts
         FiraCode20 = qp_load_font_mem(font_FiraCode_20);
-        
+
         // Pre-load all layer images
         if (!images_loaded) {
             layer_images[0] = qp_load_image_mem(gfx_0);
@@ -266,7 +266,7 @@ bool update_display(void) {
     if (last_layer_state != layer_state || first_run_layer == false) {
         uint8_t current_layer = get_highest_layer(layer_state|default_layer_state);
         uint8_t image_index = (current_layer <= 7) ? current_layer : 8;
-        
+
         switch (current_layer) {
         case 0:
             qp_drawimage_recolor(lcd_surface, 5, 5, layer_images[image_index], HSV_LAYER_0, HSV_BLACK);

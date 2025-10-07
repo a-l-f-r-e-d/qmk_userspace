@@ -22,10 +22,10 @@
 #include "graphics/numbers/9.qgf.h"
 #include "graphics/numbers/undef.qgf.h"
 
-static const char *caps = "\u21EA Caps";  // ⇪ Caps
-static const char *gui  = "\u2318 Cmd";   // ⌘ Cmd
-static const char *alt  = "\u2325 Alt";   // ⌥ Alt
-static const char *ctrl = "\u2303 Ctrl";  // ⌃ Ctrl
+static const char *caps =        "Caps";
+static const char *gui =         "Gui";
+static const char *alt =         "Alt";
+static const char *ctrl =        "Ctrl";
 
 static painter_font_handle_t FiraCode20;
 static painter_image_handle_t layer_images[9];  // 0-7 + undef
